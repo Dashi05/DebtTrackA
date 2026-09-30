@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <!-- ===== Нижняя навигация (3 основных экрана) ===== -->
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.debttrack.ui.home.HomeFragment"
+        android:label="Главная"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_home_to_debtDetail"
+            app:destination="@id/debtDetailFragment" />
+
+        <action
+            android:id="@+id/action_home_to_debtForm"
+            app:destination="@id/debtFormFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.debttrack.ui.statistics.StatisticsFragment"
+        android:label="Статистика"
+        tools:layout="@layout/fragment_statistics" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.debttrack.ui.settings.SettingsFragment"
+        android:label="Настройки"
+        tools:layout="@layout/fragment_settings" />
+
+    <!-- ===== Вложенные экраны (без нижней навигации) ===== -->
+
+    <fragment
+        android:id="@+id/debtDetailFragment"
+        android:name="com.example.debttrack.ui.debtdetail.DebtDetailFragment"
+        android:label="Детали долга"
+        tools:layout="@layout/fragment_debt_detail">
+
+        <argument
+            android:name="debtId"
+            app:argType="long" />
+
+        <action
+            android:id="@+id/action_detail_to_debtForm"
+            app:destination="@id/debtFormFragment" />
+
+        <action
+            android:id="@+id/action_detail_to_addPayment"
+            app:destination="@id/addPaymentFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/debtFormFragment"
+        android:name="com.example.debttrack.ui.debtform.DebtFormFragment"
+        android:label="Долг"
+        tools:layout="@layout/fragment_debt_form">
+
+        <argument
+            android:name="debtId"
+            android:defaultValue="-1L"
+            app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addPaymentFragment"
+        android:name="com.example.debttrack.ui.payment.AddPaymentFragment"
+        android:label="Добавить платёж"
+        tools:layout="@layout/fragment_add_payment">
+
+        <argument
+            android:name="debtId"
+            app:argType="long" />
+    </fragment>
+
+</navigation>

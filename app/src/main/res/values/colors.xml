@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand (header gradient in mockups: dark blue -> bright blue) -->
+    <color name="primary_dark">#1E3A8A</color>
+    <color name="primary">#2B4EE0</color>
+    <color name="primary_light">#3B6FE0</color>
+
+    <!-- Semantic colors: "Мне должны" (owed to me) vs "Я должен" (I owe) -->
+    <color name="color_owed_to_me">#14B8A6</color>
+    <color name="color_i_owe">#EF4444</color>
+    <color name="color_status_partial">#F59E0B</color>
+    <color name="color_status_active">#3B6FE0</color>
+
+    <!-- Neutral / surfaces -->
+    <color name="background">#F4F6FB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#1A1D29</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="divider">#E5E7EB</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

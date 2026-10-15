@@ -14,24 +14,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TagDao {
 
-    @Query("SELECT * FROM tags")
-    suspend fun getAllOnce(): List<Tag>
-
-    @Query("DELETE FROM tags")
-    suspend fun deleteAll()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllKeepingIds(items: List<Tag>)
-
-    @Query("SELECT * FROM debt_tag_cross_ref")
-    suspend fun getAllCrossRefsOnce(): List<DebtTagCrossRef>
-
-    @Query("DELETE FROM debt_tag_cross_ref")
-    suspend fun deleteAllCrossRefs()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllCrossRefs(items: List<DebtTagCrossRef>)
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(tag: Tag): Long
 

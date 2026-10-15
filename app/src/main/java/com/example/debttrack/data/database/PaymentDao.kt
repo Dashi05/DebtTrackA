@@ -4,21 +4,11 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.OnConflictStrategy
 import com.example.debttrack.data.entities.Payment
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PaymentDao {
-
-    @Query("SELECT * FROM payments")
-    suspend fun getAllOnce(): List<Payment>
-
-    @Query("DELETE FROM payments")
-    suspend fun deleteAll()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllKeepingIds(items: List<Payment>)
 
     @Insert
     suspend fun insert(payment: Payment): Long

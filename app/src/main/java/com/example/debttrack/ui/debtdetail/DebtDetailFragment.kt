@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -91,7 +90,6 @@ class DebtDetailFragment : Fragment() {
     private fun setupPaymentsList() {
         paymentAdapter = PaymentAdapter()
         binding.paymentsRecyclerView.adapter = paymentAdapter
-        binding.paymentsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun observeUiState() {

@@ -12,15 +12,6 @@ interface DebtDao {
 
     // ---------- CRUD (Недели 7-9) ----------
 
-    @Query("SELECT * FROM debts")
-    suspend fun getAllOnce(): List<Debt>
-
-    @Query("DELETE FROM debts")
-    suspend fun deleteAll()
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllKeepingIds(items: List<Debt>)
-
     @Insert
     suspend fun insert(debt: Debt): Long
 

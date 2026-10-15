@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Тёмная палитра. Переопределяются только те цвета, которые зависят от темы:
+    фоны, поверхности, текст и разделители. Фирменные и смысловые цвета
+    (primary, "мне должны" / "я должен", статусы) остаются прежними, иначе
+    приложение потеряет узнаваемость, а белый и чёрный — это литералы и
+    не меняются никогда.
+-->
+<resources>
+    <!-- Фирменные цвета осветлены: на тёмном фоне исходный синий читается плохо. -->
+    <color name="primary_dark">#16203F</color>
+    <color name="primary">#6B8AFF</color>
+    <color name="primary_light">#8AA4FF</color>
+
+    <!-- Смысловые цвета чуть светлее ради контраста с тёмной поверхностью. -->
+    <color name="color_owed_to_me">#2DD4BF</color>
+    <color name="color_i_owe">#F87171</color>
+    <color name="color_status_partial">#FBBF24</color>
+    <color name="color_status_active">#7C9BFF</color>
+
+    <!-- Поверхности и текст. -->
+    <color name="background">#0F1219</color>
+    <color name="surface">#1A1F2B</color>
+    <color name="text_primary">#F3F5F9</color>
+    <color name="text_secondary">#9AA3B5</color>
+    <color name="divider">#2B3242</color>
+</resources>

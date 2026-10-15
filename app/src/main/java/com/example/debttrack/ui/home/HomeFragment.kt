@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.debttrack.R
 import com.example.debttrack.adapters.DebtListAdapter
 import com.example.debttrack.data.entities.Category
@@ -71,6 +72,8 @@ class HomeFragment : Fragment() {
                 )
             }
         )
+        binding.debtsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.debtsRecyclerView.adapter = adapter
         binding.debtsRecyclerView.adapter = adapter
     }
 

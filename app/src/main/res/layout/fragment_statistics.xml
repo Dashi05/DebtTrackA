@@ -14,4 +14,12 @@
         android:textSize="26sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Диаграмма и аналитика (MPAndroidChart) появятся на Неделе 11."
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
+
 </LinearLayout>

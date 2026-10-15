@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.debttrack.R
 import com.example.debttrack.data.entities.Category
+import com.example.debttrack.data.entities.Debt
 import com.example.debttrack.data.entities.DebtType
 import com.example.debttrack.databinding.FragmentDebtFormBinding
 import com.example.debttrack.utils.DateFormatter
@@ -41,6 +42,10 @@ class DebtFormFragment : Fragment() {
     private var currentCategories: List<Category> = emptyList()
     private var selectedDueDateMillis: Long? = null
 
+    /** Оригинальная запись при редактировании — хранит id/paidAmount/createdDate, которые нельзя терять при Update. */
+    private var originalDebt: Debt? = null
+    private var hasPrefilled = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -61,8 +66,6 @@ class DebtFormFragment : Fragment() {
         observeCategories()
 
         binding.saveButton.setOnClickListener { onSaveClicked() }
-
-        // TODO (Неделя 9): если isEditMode — загрузить долг по args.debtId и предзаполнить поля
     }
 
     private fun setupDueDateField() {
@@ -93,14 +96,59 @@ class DebtFormFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.categories.collect { categories ->
+                    if (categories.isEmpty()) return@collect
                     currentCategories = categories
                     binding.categorySpinner.adapter = ArrayAdapter(
                         requireContext(),
                         android.R.layout.simple_spinner_dropdown_item,
                         categories.map { it.name }
                     )
+
+                    if (isEditMode && !hasPrefilled) {
+                        hasPrefilled = true
+                        loadAndPrefillDebt()
+                    }
                 }
             }
+        }
+    }
+
+    /** Неделя 9: загружает долг по args.debtId и заполняет поля формы текущими значениями. */
+    private fun loadAndPrefillDebt() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val debt = viewModel.loadDebt(args.debtId)
+            if (debt == null) {
+                Snackbar.make(binding.root, "Долг не найден", Snackbar.LENGTH_LONG).show()
+                findNavController().navigateUp()
+                return@launch
+            }
+            originalDebt = debt
+
+            binding.personNameEditText.setText(debt.personName)
+            binding.amountEditText.setText(formatAmountForEditing(debt.amount))
+            binding.descriptionEditText.setText(debt.description)
+
+            if (debt.type == DebtType.OWED_TO_ME) {
+                binding.typeOwedToMeButton.isChecked = true
+            } else {
+                binding.typeIOweButton.isChecked = true
+            }
+
+            selectedDueDateMillis = debt.dueDate
+            binding.dueDateText.text = DateFormatter.formatDate(debt.dueDate)
+
+            val categoryIndex = currentCategories.indexOfFirst { it.id == debt.categoryId }
+            if (categoryIndex >= 0) {
+                binding.categorySpinner.setSelection(categoryIndex)
+            }
+        }
+    }
+
+    private fun formatAmountForEditing(amount: Double): String {
+        return if (amount == amount.toLong().toDouble()) {
+            amount.toLong().toString()
+        } else {
+            amount.toString()
         }
     }
 
@@ -133,6 +181,11 @@ class DebtFormFragment : Fragment() {
             isValid = false
         }
 
+        if (isEditMode && originalDebt == null) {
+            Snackbar.make(binding.root, "Данные долга ещё загружаются, попробуйте снова", Snackbar.LENGTH_SHORT).show()
+            isValid = false
+        }
+
         if (!isValid) return
 
         val type = if (binding.typeOwedToMeButton.isChecked) DebtType.OWED_TO_ME else DebtType.I_OWE
@@ -142,14 +195,26 @@ class DebtFormFragment : Fragment() {
         binding.saveButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                viewModel.createDebt(
-                    personName = personName,
-                    type = type,
-                    amount = amount!!,
-                    categoryId = category.id,
-                    description = description,
-                    dueDate = selectedDueDateMillis!!
-                )
+                if (isEditMode) {
+                    viewModel.updateDebt(
+                        original = originalDebt!!,
+                        personName = personName,
+                        type = type,
+                        amount = amount!!,
+                        categoryId = category.id,
+                        description = description,
+                        dueDate = selectedDueDateMillis!!
+                    )
+                } else {
+                    viewModel.createDebt(
+                        personName = personName,
+                        type = type,
+                        amount = amount!!,
+                        categoryId = category.id,
+                        description = description,
+                        dueDate = selectedDueDateMillis!!
+                    )
+                }
                 findNavController().navigateUp()
             } catch (e: Exception) {
                 binding.saveButton.isEnabled = true

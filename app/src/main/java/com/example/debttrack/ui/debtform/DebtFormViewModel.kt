@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.debttrack.data.entities.Category
+import com.example.debttrack.data.entities.Debt
 import com.example.debttrack.data.entities.DebtType
 import com.example.debttrack.data.repository.CategoryRepository
 import com.example.debttrack.data.repository.DebtRepository
@@ -20,6 +21,9 @@ class DebtFormViewModel(
 
     val categories = categoryRepository.getAll()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList<Category>())
+
+    /** Загружает существующий долг для режима редактирования (Неделя 9). */
+    suspend fun loadDebt(debtId: Long): Debt? = debtRepository.getById(debtId)
 
     /**
      * Создаёт новый долг (Неделя 7). Возвращает id созданной записи.
@@ -40,6 +44,31 @@ class DebtFormViewModel(
         description = description,
         dueDate = dueDate
     )
+
+    /**
+     * Обновляет существующий долг (Неделя 9). Сохраняет id/paidAmount/createdDate
+     * оригинальной записи, статус пересчитывается автоматически в репозитории.
+     */
+    suspend fun updateDebt(
+        original: Debt,
+        personName: String,
+        type: DebtType,
+        amount: Double,
+        categoryId: Long,
+        description: String,
+        dueDate: Long
+    ) {
+        debtRepository.updateDebt(
+            original.copy(
+                personName = personName,
+                type = type,
+                amount = amount,
+                categoryId = categoryId,
+                description = description,
+                dueDate = dueDate
+            )
+        )
+    }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

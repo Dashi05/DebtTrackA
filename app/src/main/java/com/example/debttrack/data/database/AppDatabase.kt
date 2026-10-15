@@ -53,11 +53,17 @@ abstract class AppDatabase : RoomDatabase() {
 
         /** Предзаполнение стартовыми категориями при первом создании БД. */
         private val prepopulateCallback = object : Callback() {
-            override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
-                super.onCreate(db)
-                INSTANCE?.let { database ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        database.categoryDao().insertAll(defaultCategories)
+            override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                super.onOpen(db)
+                val isEmpty = db.query("SELECT COUNT(*) FROM categories").use { cursor ->
+                    cursor.moveToFirst() && cursor.getInt(0) == 0
+                }
+                if (isEmpty) {
+                    defaultCategories.forEach { category ->
+                        db.execSQL(
+                            "INSERT INTO categories (name, colorHex) VALUES (?, ?)",
+                            arrayOf(category.name, category.colorHex)
+                        )
                     }
                 }
             }

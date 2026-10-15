@@ -1,17 +1,27 @@
 package com.example.debttrack.data
 
 import android.content.Context
+import com.example.debttrack.data.UserPreferencesRepository
 import com.example.debttrack.data.database.AppDatabase
 import com.example.debttrack.data.repository.CategoryRepository
 import com.example.debttrack.data.repository.DebtRepository
 import com.example.debttrack.data.repository.PaymentRepository
 import com.example.debttrack.data.repository.TagRepository
+import com.example.debttrack.data.backup.BackupRepository
 
 /**
  * Простой ручной DI-контейнер (без Hilt/Dagger — достаточно для масштаба проекта).
  * Создаётся один раз в DebtTrackApplication и передаётся во ViewModelFactory.
  */
 class AppContainer(context: Context) {
+
+    val userPreferencesRepository: UserPreferencesRepository by lazy {
+        UserPreferencesRepository(context)
+    }
+
+    val backupRepository: BackupRepository by lazy {
+        BackupRepository(database)
+    }
 
     private val database: AppDatabase = AppDatabase.getInstance(context)
 
